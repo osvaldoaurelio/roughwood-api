@@ -1,0 +1,40 @@
+@host = http://localhost:3000/api/
+
+###
+
+GET {{host}}used_materials HTTP/1.1
+
+###
+
+POST {{host}}used_materials HTTP/1.1
+Content-Type: application/json
+
+{
+  "usedMaterial": {
+    "name": "Biscoito de bolacha",
+    "description": "nem bolacha nem biscoito",
+    "quantity": 2
+  }
+}
+
+###
+
+GET {{host}}used_materials/2 HTTP/1.1
+
+###
+
+PUT {{host}}used_materials/5 HTTP/1.1
+Content-Type: application/json
+
+{
+  "usedMaterial": {
+    "name": "Biscoito de bolacha",
+    "description": "nem bolacha nem biscoito",
+    "quantity": 10
+  }
+}
+###
+
+DELETE  {{host}}used_materials/5 HTTP/1.1
+
+###

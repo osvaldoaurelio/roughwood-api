@@ -1,0 +1,44 @@
+@host = http://localhost:3000/api/
+@user_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDc2MjY5NDMsImV4cCI6MTYwNzc5OTc0Mywic3ViIjoiMi1mYWxzZSJ9.fG9ySPm-3XnY4Xa9LX3692f73_a44Ay-bj0e_lypY5o
+@auth_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDc2MjYzNTAsImV4cCI6MTYwNzc5OTE1MCwic3ViIjoiOS10cnVlIn0.itvFkuSGYLdXSMW1CS0-k0kFeXqvWthkL2wqJlD_hoA
+
+###
+
+GET {{host}}users HTTP/1.1
+Authorization: {{auth_token}}
+
+###
+
+POST {{host}}users HTTP/1.1
+Content-Type: application/json
+Authorization: {{auth_token}}
+
+{
+  "user": {
+    "name": "lalal",
+    "username": "lalalaFuncionario",
+    "password": "123456"
+  }
+}
+
+###
+
+GET {{host}}users/4 HTTP/1.1
+Authorization: {{auth_token}}
+
+###
+
+PUT {{host}}users/4 HTTP/1.1
+Content-Type: application/json
+
+{
+  "user": {
+    "name": "Ribeiro Editado",
+    "is_active": true
+  }
+}
+###
+
+DELETE  {{host}}users/5 HTTP/1.1
+
+###

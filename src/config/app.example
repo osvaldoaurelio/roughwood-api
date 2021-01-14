@@ -1,0 +1,11 @@
+// Não apagar! Crie uma cópia, preencha e mude a extensão para .js
+
+module.exports = {
+  jwt: {
+    secret: '',
+    expiresIn: '',
+  },
+  server: {
+    port: 3000,
+  }
+}

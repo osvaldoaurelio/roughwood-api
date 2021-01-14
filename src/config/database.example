@@ -1,0 +1,16 @@
+// Não apagar! Crie uma cópia, preencha e mude a extensão para .js
+
+module.exports = {
+  dialect: '',
+  host: '',
+  username: '',
+  password: '',
+  database: '',
+  define: {
+    timestamps: true,
+    underscored: true,
+    underscoredAll: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+}

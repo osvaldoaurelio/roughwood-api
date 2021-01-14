@@ -1,0 +1,53 @@
+@host = http://localhost:3000/api/
+@auth_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDc2NDY0NzIsImV4cCI6MTYwNzgxOTI3Miwic3ViIjoiMS10cnVlLXRydWUifQ.dBblvpg-YAZmd-yNAU1uZvlbXFVamn6zyZiYVsqQ8bc
+@user_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDc2Mzc0MjgsImV4cCI6MTYwNzgxMDIyOCwic3ViIjoiMi1mYWxzZS1mYWxzZSJ9.UJcHxM4KFX8NesFN7tmZXk9hUEXMX_N7YmZIapU4DKc
+###
+
+GET {{host}}orders HTTP/1.1
+Authorization: {{auth_token}}
+
+###
+
+GET {{host}}orders/mine HTTP/1.1
+Authorization: {{user_token}}
+ 
+###
+
+POST {{host}}orders HTTP/1.1
+Content-Type: application/json
+Authorization: {{auth_token}}
+
+{
+  "order": {
+    "user_id": 2,
+    "customer_id": 2,
+    "initial_date": "2020-12-11T02:16:31.843Z",
+    "final_date": "2020-12-31T02:16:31.843Z",
+    "price": 2020,
+    "discount": 0.2
+  }
+}
+
+###
+
+GET {{host}}orders/10 HTTP/1.1
+Authorization: {{auth_token}}
+
+###
+
+PUT {{host}}orders/6 HTTP/1.1
+Content-Type: application/json
+Authorization: {{auth_token}}
+
+{
+  "order": {
+    "user_id": 3,
+    "discount": 0.3
+  }
+}
+###
+
+DELETE  {{host}}orders/6 HTTP/1.1
+Authorization: {{auth_token}}
+
+###

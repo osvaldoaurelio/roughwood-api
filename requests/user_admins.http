@@ -1,0 +1,37 @@
+@host = http://localhost:3000/api/
+@auth_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDc2MjYzNTAsImV4cCI6MTYwNzc5OTE1MCwic3ViIjoiOS10cnVlIn0.itvFkuSGYLdXSMW1CS0-k0kFeXqvWthkL2wqJlD_hoA
+
+###
+
+POST {{host}}user_admins HTTP/1.1
+Content-Type: application/json
+
+{
+  "user": {
+    "name": "admin",
+    "username": "osvaldoadmin",
+    "password": "123456"
+  }
+}
+
+###
+
+GET {{host}}user_admins/me HTTP/1.1
+Authorization: {{auth_token}}
+
+###
+
+PUT {{host}}user_admins HTTP/1.1
+Authorization: {{auth_token}}
+Content-Type: application/json
+
+{
+  "user": {
+    "name": "acabei de alterar esse nome manolo"
+  }
+}
+
+###
+
+DELETE {{host}}user_admins HTTP/1.1
+Authorization: {{auth_token}}

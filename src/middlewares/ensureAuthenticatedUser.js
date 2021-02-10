@@ -27,7 +27,6 @@ const ensureAuthenticatedUser = (req, res, next) => {
     return next();
 
   } catch (err) {
-    console.log(err);
     return res.status(403).json({ error: 'Invalid JWT token' });
   }
 

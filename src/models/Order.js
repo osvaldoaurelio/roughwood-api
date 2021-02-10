@@ -8,7 +8,7 @@ class Order extends Model {
       final_date: DataTypes.DATE,
       price: DataTypes.FLOAT,
       discount: DataTypes.FLOAT,
-      status: DataTypes.ENUM('pending', 'progress', 'done', 'late', 'paid'),
+      status: DataTypes.ENUM('pending', 'progress', 'done', 'late', 'invoiced'),
     }, {
       sequelize,
       tableName: 'orders',

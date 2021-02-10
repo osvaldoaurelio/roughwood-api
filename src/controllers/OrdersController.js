@@ -74,7 +74,7 @@ module.exports = {
 
       return res.status(201).json({ order });
     } else {
-      return res.status(400).json({ error: 'Bad request!' });
+      return res.status(400).json({ error: 'Bad request' });
     }
   },
 

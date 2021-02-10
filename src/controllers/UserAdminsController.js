@@ -5,12 +5,11 @@ const User = require('../models/User');
 module.exports = {
   async store(req, res) {
     const { name, username, password } = req.body.user;
-    console.log('username', username);
+
     if (name && username && password) {
       const existUsername = await User.findOne({ where: { username } });
       if (existUsername) {
-        console.log(existUsername);
-        return res.status(400).json({ error: 'This username already exist!' });
+        return res.status(400).json({ error: 'Este Username já existe' });
       }
       const user = await User.create({
         name,
@@ -22,7 +21,7 @@ module.exports = {
 
       return res.status(201).json({ user });
     } else {
-      return res.status(400).json({ error: 'Bad request!' });
+      return res.status(400).json({ error: 'Bad request' });
     }    
   },
 

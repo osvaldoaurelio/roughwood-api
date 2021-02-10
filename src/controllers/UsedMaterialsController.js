@@ -15,7 +15,7 @@ module.exports = {
 
       return res.status(201).json({ usedMaterial });
     } else {
-      return res.status(400).json({ error: 'Bad request!' });
+      return res.status(400).json({ error: 'Bad request' });
     }    
   },
 

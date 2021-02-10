@@ -4,8 +4,8 @@ class StockMaterial extends Model {
   static init(sequelize) {
     super.init({
       name: DataTypes.STRING,
+      price: DataTypes.INTEGER,
       description: DataTypes.STRING,
-      quantity: DataTypes.INTEGER,
       is_active: DataTypes.BOOLEAN,
     }, {
       sequelize,

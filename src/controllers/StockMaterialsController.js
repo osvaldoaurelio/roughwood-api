@@ -1,31 +1,60 @@
+const { Op: { or, iLike } } = require('sequelize');
+
 const StockMaterial = require('../models/StockMaterial');
 
 module.exports = {
   async list(req, res) {
-    const stockMaterials = await StockMaterial.findAll();
+    const { query: { search = '' } } = req;
 
-    return res.json({ stockMaterials });
+    try {
+      const stock_materials = await StockMaterial.findAll({
+        where: {
+          [or]: [
+            { name: { [iLike]: `%${search}%` } },
+            { description: { [iLike]: `%${search}%` } },
+          ],
+        },
+        order: [
+          ['is_active', 'DESC'],
+          ['updated_at', 'DESC'],
+        ],
+      });
+
+      return res.json({ stock_materials });
+    } catch (err) {
+      return res.status(500).json();
+    }
   },
 
   async store(req, res) {
-    const { name, description, quantity = 1, is_active = true } = req.body.stockMaterial;
+    const {
+      name,
+      price,
+      description = '',
+      is_active,
+    } = req.body.stock_material;
 
-    if (name) {
-      const stockMaterial = await StockMaterial.create({ name, description, quantity, is_active });
+    if (name && price) {
+      const stock_material = await StockMaterial.create({
+        name,
+        price,
+        description,
+        is_active
+      });
 
-      return res.status(201).json({ stockMaterial });
+      return res.status(201).json({ stock_material });
     } else {
-      return res.status(400).json({ error: 'Bad request!' });
+      return res.status(400).json({ error: 'Bad request' });
     }    
   },
 
   async show(req, res) {
     const { id } = req.params;
 
-    const stockMaterial = await StockMaterial.findByPk(id);
+    const stock_material = await StockMaterial.findByPk(id);
 
-    if (stockMaterial) {
-      return res.json({ stockMaterial });
+    if (stock_material) {
+      return res.json({ stock_material });
     } else {
       return res.status(404).json({ error: 'Not found!' });
     }
@@ -34,19 +63,19 @@ module.exports = {
   async edit(req, res) {
     const { id } = req.params;
     
-    let stockMaterial = await StockMaterial.findByPk(id);
+    let stock_material = await StockMaterial.findByPk(id);
     
-    if (stockMaterial) {
-      const { name, description, quantity, is_active } = req.body.stockMaterial;
+    if (stock_material) {
+      const { name, price, description, is_active } = req.body.stock_material;
 
-      stockMaterial.name = name ?? stockMaterial.name;
-      stockMaterial.description = description ?? stockMaterial.description;
-      stockMaterial.quantity = quantity ?? stockMaterial.quantity;
-      stockMaterial.is_active = is_active ?? stockMaterial.is_active;
+      stock_material.name = name ?? stock_material.name;
+      stock_material.price = price ?? stock_material.price;
+      stock_material.description = description ?? stock_material.description;
+      stock_material.is_active = is_active ?? stock_material.is_active;
 
-      stockMaterial = await stockMaterial.save();
+      stock_material = await stock_material.save();
 
-      return res.json({ stockMaterial });
+      return res.json({ stock_material });
     } else {
       return res.status(404).json({ error: 'Not found!' });
     }    
@@ -55,10 +84,10 @@ module.exports = {
   async destroy(req, res) {
     const { id } = req.params;
 
-    const stockMaterial = await StockMaterial.findByPk(id);
+    const stock_material = await StockMaterial.findByPk(id);
     
-    if (stockMaterial) {
-      await stockMaterial.destroy();
+    if (stock_material) {
+      await stock_material.destroy();
 
       return res.status(204).json();
     } else {

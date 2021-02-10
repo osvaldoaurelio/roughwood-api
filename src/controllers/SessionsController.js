@@ -11,15 +11,15 @@ module.exports = {
 
     const user = await User.findOne({ where: { username } });
     if (!user) {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Username e/ou Password incorreto' });
     }
     if (!user.is_admin) {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Username e/ou Password incorreto' });
     }
 
     const passwordMatch = await compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Username e/ou Password incorreto' });
     }
 
     const { secret, expiresIn } = config.jwt;
@@ -36,15 +36,15 @@ module.exports = {
 
     const user = await User.findOne({ where: { username } });
     if (!user) {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Username e/ou Password incorreto' });
     }
     if (user.is_admin) {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Username e/ou Password incorreto' });
     }
 
     const passwordMatch = await compare(password, user.password);
     if (!passwordMatch) {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Username e/ou Password incorreto' });
     }
 
     const { secret, expiresIn } = config.jwt;

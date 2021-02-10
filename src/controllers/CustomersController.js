@@ -1,21 +1,50 @@
+const { Op: { or, iLike } } = require('sequelize');
+
 const Customer = require('../models/Customer');
+
+const { genColor, genInitials } = require('../utils');
 
 module.exports = {
   async list(req, res) {
-    const customers = await Customer.findAll();
+    const { query: { search = '' } } = req;
 
-    return res.json({ customers });
+    try {
+      const customers = await Customer.findAll({
+        where: {
+          [or]: [
+            { name: { [iLike]: `%${search}%` } },
+            { cpf: { [iLike]: `%${search}%` } },
+          ],
+        },
+        order: [['updated_at', 'DESC']],
+      });
+      return res.json({ customers });
+    } catch (err) {
+      return res.status(500).json();
+    }
   },
 
   async store(req, res) {
-    const { name, cpf, address = '', phone = '' } = req.body.customer;
+    const {
+      name,
+      cpf,
+      address = '',
+      phone = '',
+    } = req.body.customer;
 
     if (name && cpf) {
-      const customer = await Customer.create({ name, cpf, address, phone });
+      const customer = await Customer.create({
+        name,
+        cpf,
+        address,
+        phone,
+        color: genColor(),
+        initials: genInitials(name),
+      });
 
       return res.status(201).json({ customer });
     } else {
-      return res.status(400).json({ error: 'Bad request!' });
+      return res.status(400).json({ error: 'Bad request' });
     }    
   },
 
@@ -23,6 +52,23 @@ module.exports = {
     const { id } = req.params;
 
     const customer = await Customer.findByPk(id);
+
+    if (customer) {
+      return res.json({ customer });
+    } else {
+      return res.status(404).json({ error: 'Not found!' });
+    }
+  },
+  
+  async orders(req, res) {
+    const { id } = req.params;
+
+    const customer = await Customer.findByPk(id, {
+      include: [{
+        association: 'customer_orders',
+        include: [{ association: 'employee' }],
+      }],
+    });
 
     if (customer) {
       return res.json({ customer });
@@ -43,6 +89,8 @@ module.exports = {
       customer.cpf = cpf ?? customer.cpf;
       customer.address = address ?? customer.address;
       customer.phone = phone ?? customer.phone;
+      customer.color = genColor(),
+      customer.initials = genInitials(customer.name),
 
       customer = await customer.save();
 

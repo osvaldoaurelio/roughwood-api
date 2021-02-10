@@ -21,6 +21,26 @@ module.exports = {
       type: Sequelize.STRING,
       allowNull: false,
     },
+    address: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      defaultValue: '',
+    },
+    phone: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      defaultValue: '',
+    },
+    color: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      defaultValue: '',
+    },
+    initials: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      defaultValue: '',
+    },
     isActive: {
       type: Sequelize.BOOLEAN,
       field: 'is_active',

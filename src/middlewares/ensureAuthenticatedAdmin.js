@@ -14,7 +14,7 @@ const ensureAuthenticatedAdmin = (req, res, next) => {
   try {
     const { sub } = verify(token, secret);  
     const [id, is_admin, is_active] = sub.split('-');
-console.log(is_admin);
+
     if (is_admin == 'false') {
       return res.status(403).json({ error: 'Você não é admin' });
     }
@@ -27,7 +27,6 @@ console.log(is_admin);
     return next();
     
   } catch (err) {
-    console.log(err);
     return res.status(403).json({ error: 'Invalid JWT token' });
   }
 

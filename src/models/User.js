@@ -6,6 +6,10 @@ class User extends Model {
       name: DataTypes.STRING,
       username: DataTypes.STRING,
       password: DataTypes.STRING,
+      address: DataTypes.STRING,
+      phone: DataTypes.STRING,
+      color: DataTypes.STRING,
+      initials: DataTypes.STRING,
       is_active: DataTypes.BOOLEAN,
       is_admin: DataTypes.BOOLEAN,
     }, {

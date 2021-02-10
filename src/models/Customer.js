@@ -7,6 +7,8 @@ class Customer extends Model {
       cpf: DataTypes.STRING,
       address: DataTypes.STRING,
       phone: DataTypes.STRING,
+      color: DataTypes.STRING,
+      initials: DataTypes.STRING,
     }, {
       sequelize,
       tableName: 'customers',

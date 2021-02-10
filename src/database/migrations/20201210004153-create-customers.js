@@ -27,6 +27,16 @@ module.exports = {
       allowNull: true,
       defaultValue: '',
     },
+    color: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      defaultValue: '',
+    },
+    initials: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      defaultValue: '',
+    },
     createdAt: {
       type: Sequelize.DATE,
       field: 'created_at',

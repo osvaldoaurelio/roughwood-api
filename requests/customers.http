@@ -1,37 +1,45 @@
-@host = http://localhost:3000/api/
-
+@host = http://localhost:3031/api/
+@auth_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTI3ODg5NDgsImV4cCI6MTYxMjk2MTc0OCwic3ViIjoiNC10cnVlLXRydWUifQ.CPS99vhqDB6xFFyjDyeGJWOqdpxkkcx25YNHVefPMec
+@user_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTI2MTA1NjAsImV4cCI6MTYxMjc4MzM2MCwic3ViIjoiMi1mYWxzZS1mYWxzZSJ9.Ip0PPO3BguBju0SMROzCii1gF70ARdWR1LAQKMPPX14
 ###
 
 GET {{host}}customers HTTP/1.1
+Authorization: {{auth_token}}
 
 ###
 
 POST {{host}}customers HTTP/1.1
+Authorization: {{auth_token}}
 Content-Type: application/json
 
 {
   "customer": {
-    "name": "Cliente criado",
-    "cpf": "12345678901",
-    "address": "Rua 1",
-    "phone": "1234352"
+    "name": "Ubiratan Ribeiro",
+    "cpf": "98765432109",
+    "address": "Rua dos índios Nº 3",
+    "phone": "33621234"
   }
 }
 
 ###
 
-GET {{host}}customers/2 HTTP/1.1
+GET {{host}}customers/4 HTTP/1.1
+Authorization: {{auth_token}}
+
+###
+
+GET {{host}}customers/4/orders HTTP/1.1
+Authorization: {{auth_token}}
 
 ###
 
 PUT {{host}}customers/6 HTTP/1.1
+Authorization: {{auth_token}}
 Content-Type: application/json
 
 {
   "customer": {
-    "cpf": "12345678901",
-    "address": "Rua 1",
-    "phone": "33620001"
+    
   }
 }
 ###

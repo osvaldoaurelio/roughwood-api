@@ -13,15 +13,14 @@ module.exports = {
       allowNull: false,
       unique: true,
     },
+    price: {
+      type: Sequelize.FLOAT,
+      allowNull: false,
+    },
     description: {
       type: Sequelize.STRING,
       allowNull: true,
       defaultValue: '',
-    },
-    quantity: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      defaultValue: 1,
     },
     isActive: {
       type: Sequelize.BOOLEAN,

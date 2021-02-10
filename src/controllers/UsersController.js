@@ -1,33 +1,58 @@
 const { hash } = require('bcryptjs');
+const { Op: { or, iLike } } = require('sequelize');
 
 const User = require('../models/User');
 
+const { userAttr, genColor, genInitials } = require('../utils');
+
 module.exports = {
   async list(req, res) {
-    const users = await User.findAll({
-      attributes: ['id'],
-    });
-    console.log(users.length, users.reduce((previus, current) => ([...previus, current.id]), []));
-    return res.json({ users });
+    const { query: { search = '' } } = req;
+
+    try {
+      const users = await User.findAll({
+        attributes: userAttr,
+        where: {
+          is_admin: false,
+          [or]: [
+            { name: { [iLike]: `%${search}%` } },
+            { username: { [iLike]: `%${search}%` } },
+          ],
+        },
+        order: [['updated_at', 'DESC']],
+      });
+      return res.json({ users });
+    } catch (err) {
+      return res.status(500).json();
+    }
   },
 
   async store(req, res) {
-    const { name, username, password } = req.body.user;
+    const {
+      name,
+      username,
+      address = '',
+      phone = '',
+    } = req.body.user;
 
-    if (name && username && password) {
+    if (name && username) {
       const existUsername = await User.findOne({ where: { username } });
       if (existUsername) {
-        return res.status(400).json({ error: 'This username already exist!' });
+        return res.status(400).json({ error: 'Este Username já existe' });
       }
       const user = await User.create({
         name,
         username,
-        password: await hash(password, 8),
+        address,
+        phone,
+        color: genColor(),
+        initials: genInitials(name),
+        password: await hash(username, 8),
       });
 
       return res.status(201).json({ user });
     } else {
-      return res.status(400).json({ error: 'Bad request!' });
+      return res.status(400).json({ error: 'Bad request' });
     }    
   },
 
@@ -44,6 +69,24 @@ module.exports = {
       return res.status(404).json({ error: 'Not found!' });
     }
   },
+  
+  async orders(req, res) {
+    const { id } = req.params;
+
+    const user = await User.findByPk(id, {
+      attributes: userAttr,
+      include: [{
+        association: 'user_orders',
+        include: [{ association: 'customer' }],
+      }],
+    });
+
+    if (user) {
+      return res.json({ user });
+    } else {
+      return res.status(404).json({ error: 'Not found!' });
+    }
+  },
 
   async edit(req, res) {
     const { id } = req.params;
@@ -51,14 +94,34 @@ module.exports = {
     let user = await User.findByPk(id);
     
     if (user) {
-      const { name, is_active } = req.body.user;
+      const { name, address, phone } = req.body.user;
 
       user.name = name ?? user.name;
-      user.is_active = is_active ?? user.is_active;
+      user.address = address ?? user.address;
+      user.phone = phone ?? user.phone;
+      user.color = genColor(),
+      user.initials = genInitials(user.name),
 
       user = await user.save();
 
       return res.json({ user });
+    } else {
+      return res.status(404).json({ error: 'Not found!' });
+    }    
+  },
+
+  async resetPassword(req, res) {
+    const { id } = req.params;
+    
+    let user = await User.findByPk(id);
+    
+    if (user) {
+      user.is_active = false;
+      user.password = await hash(user.username, 8);
+
+      user = await user.save();
+
+      return res.json({ message: 'ok' });
     } else {
       return res.status(404).json({ error: 'Not found!' });
     }    

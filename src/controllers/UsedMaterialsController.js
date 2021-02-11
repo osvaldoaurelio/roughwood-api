@@ -27,7 +27,7 @@ module.exports = {
     if (usedMaterial) {
       return res.json({ usedMaterial });
     } else {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Not Found' });
     }
   },
 
@@ -48,7 +48,7 @@ module.exports = {
 
       return res.json({ usedMaterial });
     } else {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Not Found' });
     }    
   },
 
@@ -62,7 +62,7 @@ module.exports = {
 
       return res.status(204).json();
     } else {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Not Found' });
     }
   },
 

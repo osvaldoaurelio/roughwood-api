@@ -1,5 +1,5 @@
 @host = http://localhost:3031/api/
-@auth_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTI5MTk4ODcsImV4cCI6MTYxMzA5MjY4Nywic3ViIjoiMS10cnVlLXRydWUifQ.JFQHjZG33Bu8fANLWaoMnXDU0SxsNfVk1jbn1jNod0U
+@auth_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTMwMDczMDEsImV4cCI6MTYxMzE4MDEwMSwic3ViIjoiMS10cnVlLXRydWUifQ.CMPX54bmr1n04dsVFXIZkNQrvWzC59mAJtsZUGdcO2A
 
 ###
 
@@ -20,7 +20,7 @@ Authorization: {{auth_token}}
 
 ###
 
-GET {{host}}stock_materials/21 HTTP/1.1
+GET {{host}}stock_materials/212 HTTP/1.1
 Authorization: {{auth_token}}
 
 ###

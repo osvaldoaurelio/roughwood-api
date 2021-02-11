@@ -1,5 +1,5 @@
 @host = http://localhost:3031/api/
-@user_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDc2MjY5NDMsImV4cCI6MTYwNzc5OTc0Mywic3ViIjoiMi1mYWxzZSJ9.fG9ySPm-3XnY4Xa9LX3692f73_a44Ay-bj0e_lypY5o
+@user_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTMwMDYyMjEsImV4cCI6MTYxMzE3OTAyMSwic3ViIjoiMi1mYWxzZS1mYWxzZSJ9.2jahMZK9M8pA9skcuyzYgdzOqlxeeXxhN33qvUJA2UQ
 @auth_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTI4ODg2MTksImV4cCI6MTYxMzA2MTQxOSwic3ViIjoiMS10cnVlLXRydWUifQ.qgrJMKKpT9mSf0lgPFRQ2VCsF4JgVrRESXafNvHzzjc
 
 ###

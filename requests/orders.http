@@ -1,15 +1,15 @@
 @host = http://localhost:3031/api/
-@auth_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTI3ODg5NDgsImV4cCI6MTYxMjk2MTc0OCwic3ViIjoiNC10cnVlLXRydWUifQ.CPS99vhqDB6xFFyjDyeGJWOqdpxkkcx25YNHVefPMec
-@user_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTE2MTQyOTAsImV4cCI6MTYxMTc4NzA5MCwic3ViIjoiMi1mYWxzZS1mYWxzZSJ9.QVqgjY9g6fRRwRJVXFGawJJOfIjIhpLZiG4jrS8zeoI
+@auth_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTMwMDMzODgsImV4cCI6MTYxMzE3NjE4OCwic3ViIjoiMS10cnVlLXRydWUifQ.cVID5SGo_9_tLpZBQnvPLsO8og9MF_78CYMTTTktQSw
+@user_token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTMwMDYyMjEsImV4cCI6MTYxMzE3OTAyMSwic3ViIjoiMi1mYWxzZS1mYWxzZSJ9.2jahMZK9M8pA9skcuyzYgdzOqlxeeXxhN33qvUJA2UQ
 ###
 
-GET {{host}}orders HTTP/1.1
+GET {{host}}orders?search= HTTP/1.1
 Authorization: {{auth_token}}
 
 ###
 
 GET {{host}}orders/mine HTTP/1.1
-Authorization: {{auth_token}}
+Authorization: {{user_token}}
  
 ###
 

@@ -1,39 +1,53 @@
-const { Op } = require('sequelize');
+const { Op: { or, in: In, iLike } } = require('sequelize');
 const Customer = require('../models/Customer');
 const Order = require('../models/Order');
 const User = require('../models/User');
 
 module.exports = {
   async list(req, res) {
-    const orders = await Order.findAll({
-      order: [ ['created_at', 'ASC'] ],
-      include: [
-        { association: 'customer' },
-        { association: 'employee' }
-      ],
-    });
+    const { query: { search = '' } } = req;
 
-    return res.json({ orders });
+    try {
+      const orders = await Order.findAll({
+        include: [
+          { association: 'customer' },
+          { association: 'employee' },
+        ],
+        where: {
+          [or]: [
+            { description: { [iLike]: `%${search}%` } },
+            { '$customer.name$': { [iLike]: `%${search}%` } },
+            { '$employee.name$': { [iLike]: `%${search}%` } },
+          ],
+        },
+        order: [ ['created_at', 'ASC'] ],
+      });
+
+      return res.json({ orders });
+    } catch (err) {
+      return res.status(500).json();
+    }
   },
 
+  /** User non-admin route */
   async mine(req, res) {
     const { id } = req.user;
 
-    const orders = await Order.findAll({
-      where: {
-        user_id: id,
-        status: {
-          [Op.in]: ['progress', 'late']
-        }
-      },
-      order: [ ['created_at', 'ASC'] ],
-      include: { association: 'customer' },
-    });
-
-    if (orders) {
+    try {
+      const orders = await Order.findAll({
+        where: {
+          user_id: id,
+          status: {
+            [In]: ['progress', 'late']
+          }
+        },
+        order: [ ['created_at', 'ASC'] ],
+        include: { association: 'customer' },
+      });
+      
       return res.json({ orders });
-    } else {
-      return res.status(404).json({ error: 'Not found!' });
+    } catch (err) {
+      return res.status(500).json();
     }
   },
 
@@ -88,7 +102,7 @@ module.exports = {
     if (order) {
       return res.json({ order });
     } else {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Not Found' });
     }
   },
 
@@ -108,7 +122,7 @@ module.exports = {
 
       return res.json({ order });
     } else {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Not Found' });
     }    
   },
 
@@ -122,7 +136,7 @@ module.exports = {
 
       return res.status(204).json();
     } else {
-      return res.status(404).json({ error: 'Not found!' });
+      return res.status(404).json({ error: 'Not Found' });
     }
   },
 

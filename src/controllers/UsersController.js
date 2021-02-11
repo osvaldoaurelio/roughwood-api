@@ -1,5 +1,5 @@
-const { hash } = require('bcryptjs');
 const { Op: { or, iLike } } = require('sequelize');
+const { hash } = require('bcryptjs');
 
 const User = require('../models/User');
 
@@ -21,6 +21,7 @@ module.exports = {
         },
         order: [['updated_at', 'DESC']],
       });
+
       return res.json({ users });
     } catch (err) {
       return res.status(500).json();
@@ -35,109 +36,133 @@ module.exports = {
       phone = '',
     } = req.body.user;
 
-    if (name && username) {
-      const existUsername = await User.findOne({ where: { username } });
-      if (existUsername) {
-        return res.status(400).json({ error: 'Este Username já existe' });
-      }
-      const user = await User.create({
-        name,
-        username,
-        address,
-        phone,
-        color: genColor(),
-        initials: genInitials(name),
-        password: await hash(username, 8),
-      });
+    try {
+      if (name && username) {
+        const existUsername = await User.findOne({ where: { username } });
+        if (existUsername) {
+          return res.status(400).json({ error: 'Este Username já existe' });
+        }
+        const user = await User.create({
+          name,
+          username,
+          address,
+          phone,
+          color: genColor(),
+          initials: genInitials(name),
+          password: await hash(username, 8),
+        });
 
-      return res.status(201).json({ user });
-    } else {
-      return res.status(400).json({ error: 'Bad request' });
-    }    
+        return res.status(201).json({ user });
+      } else {
+        return res.status(400).json({ error: 'Bad request' });
+      }
+    } catch (err) {
+      return res.status(500).json();
+    }
   },
 
   async show(req, res) {
     const { id } = req.params;
 
-    const user = await User.findByPk(id, {
-      include: { association: 'user_orders' }
-    });
+    try {
+      const user = await User.findByPk(id, {
+        include: { association: 'user_orders' }
+      });
 
-    if (user) {
-      return res.json({ user });
-    } else {
-      return res.status(404).json({ error: 'Not found!' });
+      if (user) {
+        return res.json({ user });
+      } else {
+        return res.status(404).json({ error: 'Not Found' });
+      }
+    } catch (err) {
+      return res.status(500).json();
     }
   },
   
   async orders(req, res) {
     const { id } = req.params;
 
-    const user = await User.findByPk(id, {
-      attributes: userAttr,
-      include: [{
-        association: 'user_orders',
-        include: [{ association: 'customer' }],
-      }],
-    });
+    try {
+      const user = await User.findByPk(id, {
+        attributes: userAttr,
+        include: [{
+          association: 'user_orders',
+          include: [{ association: 'customer' }],
+        }],
+      });
 
-    if (user) {
-      return res.json({ user });
-    } else {
-      return res.status(404).json({ error: 'Not found!' });
+      if (user) {
+        return res.json({ user });
+      } else {
+        return res.status(404).json({ error: 'Not Found' });
+      }
+    } catch (err) {
+      return res.status(500).json();
     }
   },
 
   async edit(req, res) {
     const { id } = req.params;
-    
-    let user = await User.findByPk(id);
-    
-    if (user) {
-      const { name, address, phone } = req.body.user;
 
-      user.name = name ?? user.name;
-      user.address = address ?? user.address;
-      user.phone = phone ?? user.phone;
-      user.color = genColor(),
-      user.initials = genInitials(user.name),
+    try {  
+      let user = await User.findByPk(id);
 
-      user = await user.save();
+      if (user) {
+        const { name, address, phone } = req.body.user;
 
-      return res.json({ user });
-    } else {
-      return res.status(404).json({ error: 'Not found!' });
-    }    
+        user.name = name ?? user.name;
+        user.address = address ?? user.address;
+        user.phone = phone ?? user.phone;
+        user.color = genColor(),
+        user.initials = genInitials(user.name),
+
+        user = await user.save();
+
+        return res.json({ user });
+      } else {
+        return res.status(404).json({ error: 'Not Found' });
+      }
+    } catch (err) {
+      return res.status(500).json();
+    }
   },
 
   async resetPassword(req, res) {
     const { id } = req.params;
     
-    let user = await User.findByPk(id);
-    
-    if (user) {
-      user.is_active = false;
-      user.password = await hash(user.username, 8);
+    try {
+      let user = await User.findByPk(id);
+      
+      if (user) {
+        user.is_active = false;
+        user.password = await hash(user.username, 8);
 
-      user = await user.save();
+        user = await user.save();
 
-      return res.json({ message: 'ok' });
-    } else {
-      return res.status(404).json({ error: 'Not found!' });
-    }    
+        return res.status(200).json({ message: 'ok' });
+      } else {
+        return res.status(404).json({ error: 'Not Found' });
+      }    
+    } catch (err) {
+      return res.status(500).json();
+    }
   },
 
   async destroy(req, res) {
     const { id } = req.params;
 
-    const user = await User.findByPk(id);
-    
-    if (user) {
-      await user.destroy();
+    try {
+      const user = await User.findByPk(id);
+      
+      if (user) {
+        await user.destroy();
 
-      return res.status(204).json();
-    } else {
-      return res.status(404).json({ error: 'Not found!' });
+        return res.status(204).json();
+      } else {
+        return res.status(404).json({ error: 'Not Found' });
+      }
+    } catch (err) {
+      return res.status(500).json();
     }
   },
 

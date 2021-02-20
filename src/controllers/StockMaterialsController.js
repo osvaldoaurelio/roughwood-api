@@ -97,7 +97,7 @@ module.exports = {
       let stock_material = await StockMaterial.findByPk(id);
 
       if (stock_material) {
-        const { price, description, is_active } = req.body.stock_material;
+        const { price, supplier_name, description, is_active } = req.body.stock_material;
 
         stock_material.supplier_name = supplier_name ?? stock_material.supplier_name;
         stock_material.description = description ?? stock_material.description;

@@ -1,11 +1,10 @@
-// Não apagar! Crie uma cópia, preencha e mude a extensão para .js
 
 module.exports = {
-  dialect: '',
-  host: '',
-  username: '',
-  password: '',
-  database: '',
+  dialect: 'postgres',
+  host: process.env.HOST_DB,
+  username: process.env.USER_DB,
+  password: process.env.PASS_DB,
+  database: process.env.NAME_DB,
   define: {
     timestamps: true,
     underscored: true,

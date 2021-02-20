@@ -3,10 +3,11 @@ const { DataTypes, Model } = require('sequelize');
 class Order extends Model {
   static init(sequelize) {
     super.init({
-      description: DataTypes.STRING,
+      description: DataTypes.TEXT,
       initial_date: DataTypes.DATE,
       final_date: DataTypes.DATE,
-      price: DataTypes.FLOAT,
+      labor_cost: DataTypes.FLOAT,
+      total_price: DataTypes.FLOAT,
       discount: DataTypes.FLOAT,
       status: DataTypes.ENUM('pending', 'progress', 'done', 'late', 'invoiced'),
     }, {

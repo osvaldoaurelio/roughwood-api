@@ -11,6 +11,7 @@ module.exports = {
         where: {
           [or]: [
             { name: { [iLike]: `%${search}%` } },
+            { supplier_name: { [iLike]: `%${search}%` } },
             { description: { [iLike]: `%${search}%` } },
           ],
         },
@@ -26,22 +27,38 @@ module.exports = {
     }
   },
 
+  async active(req, res) {
+    try {
+      const stock_materials = await StockMaterial.findAll({
+        where: { is_active: true},
+        order: [['name', 'ASC']],
+      });
+
+      return res.json({ stock_materials });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json();
+    }
+  },
+
   async store(req, res) {
     const {
       name,
+      supplier_name,
       price,
       description = '',
       is_active,
     } = req.body.stock_material;
 
     try {
-      if (name && price) {
-        const existName = await Customer.findOne({ where: { name } });
+      if (name && supplier_name && price) {
+        const existName = await StockMaterial.findOne({ where: { name, supplier_name } });
         if (existName) {
           return res.status(400).json({ error: 'Este produto já existe' });
         }
         const stock_material = await StockMaterial.create({
           name,
+          supplier_name,
           price,
           description,
           is_active
@@ -52,6 +69,7 @@ module.exports = {
         return res.status(400).json({ error: 'Bad request' });
       }
     } catch (err) {
+      console.log(err)
       return res.status(500).json();
     }
   },
@@ -81,9 +99,10 @@ module.exports = {
       if (stock_material) {
         const { price, description, is_active } = req.body.stock_material;
 
-        stock_material.price = price ?? stock_material.price;
+        stock_material.supplier_name = supplier_name ?? stock_material.supplier_name;
         stock_material.description = description ?? stock_material.description;
         stock_material.is_active = is_active ?? stock_material.is_active;
+        stock_material.price = price ?? stock_material.price;
 
         stock_material = await stock_material.save();
 

@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) =>  await queryInterface.createTable('stock_materials', {
+  up: async (queryInterface, Sequelize) => await queryInterface.createTable('stock_materials', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -11,16 +11,18 @@ module.exports = {
     name: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
+    },
+    supplier_name: {
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     price: {
       type: Sequelize.FLOAT,
       allowNull: false,
     },
     description: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: true,
-      defaultValue: '',
     },
     isActive: {
       type: Sequelize.BOOLEAN,
@@ -40,5 +42,5 @@ module.exports = {
     },
   }),
 
-  down: async (queryInterface, Sequelize) =>  await queryInterface.dropTable('stock_materials'),
+  down: async (queryInterface, Sequelize) => await queryInterface.dropTable('stock_materials'),
 };

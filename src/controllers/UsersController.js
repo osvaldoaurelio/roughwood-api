@@ -87,7 +87,10 @@ module.exports = {
         attributes: userAttr,
         include: [{
           association: 'user_orders',
-          include: [{ association: 'customer' }],
+          include: [
+            { association: 'customer' },
+            { association: 'employee' },
+          ],
         }],
       });
 

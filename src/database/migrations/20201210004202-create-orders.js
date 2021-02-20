@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: async (queryInterface, Sequelize) =>  await queryInterface.createTable('orders', {
+  up: async (queryInterface, Sequelize) => await queryInterface.createTable('orders', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -21,9 +21,8 @@ module.exports = {
       onDelete: 'SET NULL',
     },
     description: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: true,
-      defaultValue: '',
     },
     initial_date: {
       type: Sequelize.DATE,
@@ -33,18 +32,21 @@ module.exports = {
       type: Sequelize.DATE,
       allowNull: false,
     },
-    price: {
+    labor_cost: {
+      type: Sequelize.FLOAT,
+      allowNull: false,
+    },
+    total_price: {
       type: Sequelize.FLOAT,
       allowNull: false,
     },
     discount: {
       type: Sequelize.FLOAT,
-      allowNull: false,
-      defaultValue: 0,
+      allowNull: true,
     },
     status: {
       type: Sequelize.ENUM,
-      values: ['pending', 'progress', 'done', 'late', 'invoiced'],
+      values: ['late', 'pending', 'progress', 'done', 'invoiced'],
       defaultValue: 'pending',
     },
     createdAt: {
@@ -59,5 +61,5 @@ module.exports = {
     },
   }),
 
-  down: async (queryInterface, Sequelize) =>  await queryInterface.dropTable('orders'),
+  down: async (queryInterface, Sequelize) => await queryInterface.dropTable('orders'),
 };

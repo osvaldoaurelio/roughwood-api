@@ -80,7 +80,10 @@ module.exports = {
       const customer = await Customer.findByPk(id, {
         include: [{
           association: 'customer_orders',
-          include: [{ association: 'employee' }],
+          include: [
+            { association: 'customer' },
+            { association: 'employee' },
+          ],
         }],
       });
 

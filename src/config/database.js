@@ -5,8 +5,12 @@ module.exports = {
   username: process.env.USER_DB,
   password: process.env.PASS_DB,
   database: process.env.NAME_DB,
-  ssl: {
-    rejectUnauthorized: false
+  ssl: true,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
   },
   define: {
     timestamps: true,

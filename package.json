@@ -1,17 +1,15 @@
 {
   "name": "roughwood-api",
-  "version": "1.9 .0",
+  "version": "1.9.0",
   "main": "src/server.js",
   "license": "MIT",
   "scripts": {
     "dev": "nodemon",
     "start": "node src/server.js",
-
     "migrate:create": "sequelize migration:generate --name",
     "migrate": "sequelize db:migrate",
     "migrate:undo": "sequelize db:migrate:undo",
     "migrate:undo:all": "sequelize db:migrate:undo:all",
-
     "seed:create": "sequelize seed:generate --name",
     "seed": "sequelize db:seed:all",
     "seed:undo": "sequelize db:seed:undo",
@@ -25,10 +23,10 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6",
-    "sequelize-cli": "^6.2.0"
+    "nodemon": "^2.0.6"
   }
 }

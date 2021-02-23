@@ -18,7 +18,7 @@ module.exports = {
       type: Sequelize.INTEGER,
       references: { model: 'customers', key: 'id' },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL',
+      onDelete: 'DELETE',
     },
     description: {
       type: Sequelize.TEXT,

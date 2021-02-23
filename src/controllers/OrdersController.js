@@ -1,4 +1,5 @@
 const { Op: { or, in: In, iLike } } = require('sequelize');
+
 const Customer = require('../models/Customer');
 const Order = require('../models/Order');
 const User = require('../models/User');
@@ -24,7 +25,7 @@ module.exports = {
       });
       /** Mover para um CronJob no futuro */ 
       orders.forEach(async order => {
-        const expired = order.final_date.getTime() < (new Date()).getTime();
+        const expired = order.final_date.getTime() < new Date().getTime();
         const isLateAllowed = !['done', 'invoiced'].includes(order.status);
 
         if (expired && isLateAllowed) {
@@ -33,35 +34,6 @@ module.exports = {
         }
       });
 
-      return res.json({ orders });
-    } catch (err) {
-      return res.status(500).json();
-    }
-  },
-
-  /** non-admin User route */
-  async mine(req, res) {
-    const { id } = req.user;
-
-    try {
-      const orders = await Order.findAll({
-        where: {
-          user_id: id,
-          status: {
-            [In]: ['pending', 'progress', 'late'],
-          },
-        },
-        order: [['status', 'ASC'], ['created_at', 'ASC']],
-        include: { association: 'customer' },
-      });
-      /** Mover para um CronJob no futuro */ 
-      orders.forEach(async order => {
-        if (order.final_date.getTime() > (new Date()).getTime()) {
-          order.status = 'late';
-          await order.save();
-        }
-      });
-      
       return res.json({ orders });
     } catch (err) {
       return res.status(500).json();
@@ -143,6 +115,39 @@ module.exports = {
     }
   },
 
+  async edit(req, res) {
+    const { id } = req.params;
+    
+    let order = await Order.findByPk(id);
+    
+    if (order) {
+      const { user_id, description } = req.body.order;
+
+      order.user_id = user_id ?? order.user_id;
+      order.description = description ?? order.description;
+
+      order = await order.save();
+
+      return res.json({ order });
+    } else {
+      return res.status(404).json({ error: 'Not Found' });
+    }
+  },
+
+  async destroy(req, res) {
+    const { id } = req.params;
+
+    const order = await Order.findByPk(id);
+    
+    if (order) {
+      await order.destroy();
+
+      return res.status(204).json();
+    } else {
+      return res.status(404).json({ error: 'Not Found' });
+    }
+  },
+
   async invoice(req, res) {
     const { id } = req.params;
     
@@ -160,44 +165,104 @@ module.exports = {
     });
     
     if (order) {
-      order.status = 'invoiced';
+      order.status = order.status === 'done'
+        ? 'invoiced'
+        : order.status;
 
       order = await order.save();
 
       return res.json({ order });
     } else {
       return res.status(404).json({ error: 'Not Found' });
-    }    
+    }
   },
 
-  async edit(req, res) {
+  /** non-admin User route */
+  async mine(req, res) {
+    const { id } = req.user;
+
+    try {
+      const orders = await Order.findAll({
+        where: {
+          user_id: id,
+          status: {
+            [In]: ['pending', 'progress', 'late'],
+          },
+        },
+        include: { association: 'customer' },
+        order: [['created_at', 'ASC'], ['status', 'ASC']],
+      });
+      /** Mover para um CronJob no futuro */ 
+      orders.forEach(async order => {
+        const expired = order.final_date.getTime() < new Date().getTime();
+
+        if (expired) {
+          order.status = 'late';
+          await order.save();
+        }
+      });
+
+      return res.json({ orders });
+    } catch (err) {
+      return res.status(500).json();
+    }
+  },
+
+  async done(req, res) {
     const { id } = req.params;
     
-    let order = await Order.findByPk(id);
+    let order = await Order.findByPk(id, {
+      include: [
+        { association: 'customer' },
+        { association: 'employee' },
+        {
+          association: 'used_materials',
+          include: [
+            { association: 'stock_material' },
+          ],
+        },
+      ],
+    });
     
     if (order) {
-      const { user_id, description } = req.body.order;
+      order.status = ['late', 'progress'].includes(order.status)
+        ? 'done'
+        : order.status;
 
-      order.user_id = user_id ?? order.user_id;
-      order.description = description ?? order.description;
+      // fazer lógica de desconto.
 
       order = await order.save();
 
       return res.json({ order });
     } else {
       return res.status(404).json({ error: 'Not Found' });
-    }    
+    }
   },
 
-  async destroy(req, res) {
+  async progress(req, res) {
     const { id } = req.params;
 
-    const order = await Order.findByPk(id);
-    
-    if (order) {
-      await order.destroy();
+    let order = await Order.findByPk(id, {
+      include: [
+        { association: 'customer' },
+        { association: 'employee' },
+        {
+          association: 'used_materials',
+          include: [
+            { association: 'stock_material' },
+          ],
+        },
+      ],
+    });
 
-      return res.status(204).json();
+    if (order) {
+      order.status = order.status === 'pending'
+        ? 'progress'
+        : order.status;
+
+      order = await order.save();
+
+      return res.json({ order });
     } else {
       return res.status(404).json({ error: 'Not Found' });
     }

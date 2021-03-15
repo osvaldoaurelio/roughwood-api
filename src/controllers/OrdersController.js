@@ -1,8 +1,11 @@
 const { Op: { or, in: In, iLike } } = require('sequelize');
+var { differenceInDays } = require('date-fns');
 
 const Customer = require('../models/Customer');
 const Order = require('../models/Order');
 const User = require('../models/User');
+
+const { makeLateMessage, calcDiscount } = require('../utils');
 
 module.exports = {
   async list(req, res) {
@@ -225,11 +228,21 @@ module.exports = {
     });
     
     if (order) {
+      if (order.status === 'late') {
+        const days = differenceInDays(new Date(), order.final_date);
+        const discount = calcDiscount(days);
+        const materialsValues = order.total_price - order.labor_cost;
+        const newLaborCost = order.labor_cost * (1 - discount / 100);
+        const newTotalPrice = materialsValues + newLaborCost;
+        const msg = makeLateMessage(days, discount, order.labor_cost, newLaborCost);
+
+        order.labor_cost = newLaborCost;
+        order.total_price = newTotalPrice;
+        order.description = `${order.description}${msg}`;
+      }
       order.status = ['late', 'progress'].includes(order.status)
         ? 'done'
         : order.status;
-
-      // fazer lógica de desconto.
 
       order = await order.save();
 

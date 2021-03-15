@@ -34,9 +34,39 @@ const userAttr = [
     'created_at'
   ];
 
+const makeLateMessage = (days, discount, value, newValue) => {
+  value = Intl.NumberFormat('pt-br', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(value);
+  newValue = Intl.NumberFormat('pt-br', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(newValue);
+
+  let msg = `\n\n* Devido à ${days} dia${days === 1 ? '' : 's'},`;
+  msg = `${msg} foi aplicado ${discount}% de desconto ao valor`;
+  msg = `${msg} da mão de obra desta ordem de serviço.\nValor `;
+  msg = `${msg}original: ${value}\nValor reajustado: ${newValue}`;
+
+  return msg;
+};
+
+const calcDiscount = days => {
+  let discount = days * 2.5;
+
+  if (discount >= 100) {
+    discount = 100;
+  }
+
+  return discount;
+};
+
 module.exports = {
   sample_id,
   genColor,
   genInitials,
   userAttr,
+  makeLateMessage,
+  calcDiscount,
 }

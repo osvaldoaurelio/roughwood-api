@@ -228,6 +228,7 @@ module.exports = {
     });
     
     if (order) {
+      console.log(order.status, 'order.status === late', (order.status === 'late'), '\n\n\n');
       if (order.status === 'late') {
         const days = differenceInDays(new Date(), order.final_date);
         const discount = calcDiscount(days);
